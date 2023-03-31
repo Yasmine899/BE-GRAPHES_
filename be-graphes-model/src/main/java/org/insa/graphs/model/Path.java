@@ -114,6 +114,45 @@ public class Path {
         
         return new Path(graph, arcs);
     }
+    /*  version createShortestPathFromNodes avec iterator à tester encore
+     * 
+       public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes) throws IllegalArgumentException {   
+        if (nodes.size()==1) { 
+            return new Path(graph, nodes.get(0)) ;
+        }    
+        List<Arc> arcs = new ArrayList<Arc>();
+        boolean found;
+        double length;
+        Arc shortest= null;
+
+        Iterator<Node> nodeiterateur =nodes.iterator();
+        Node currentnode=nodeiterateur.next();
+        while(nodeiterateur.hasNext()){
+            Node nextnode=nodeiterateur.next();
+            found=false;
+            length = Double.MAX_VALUE;
+            Iterator<Arc>arciterateur=currentnode.getSuccessors().iterator();
+            while (arciterateur.hasNext()){
+                Arc the_arc=arciterateur.next(); 
+                if (the_arc.getDestination()== nextnode){
+                    found=true; 
+                    if (the_arc.getLength()<length){
+                        length = the_arc.getLength();
+                        shortest=the_arc;
+
+                    }
+                                        
+                }
+            } 
+            if (!found){
+                throw new IllegalArgumentException("Nodes do not connect");
+            }
+            arcs.add(shortest);
+            currentnode=nextnode;
+        } 
+        return new Path(graph, arcs);
+    }  
+     */
     /**
      * Concatenate the given paths.
      * 
