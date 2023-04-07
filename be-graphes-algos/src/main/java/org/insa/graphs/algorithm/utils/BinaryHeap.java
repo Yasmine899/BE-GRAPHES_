@@ -48,7 +48,7 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
             this.array.add(value);
         }
         else {
-            this.array.set(index, value);
+            this.array.set(index , value);
         }
     }
 
@@ -64,6 +64,12 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
      */
     protected int indexLeft(int index) {
         return index * 2 + 1;
+    }
+    /**
+     * @return Index of the right child of the given index.
+     */
+    protected int indexRight(int index) {
+        return index * 2 + 2;
     }
 
     /**
@@ -135,10 +141,32 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
         this.percolateUp(index);
     }
 
+    // private int findLastOfSubTree(int index){
+    //     if (this.indexRight(index) > this.currentSize){
+    //         if (indexLeft(index)> this.currentSize){
+    //             return index;
+    //         }
+    //         return indexLeft(index);
+    //     }
+    //     return findLastOfSubTree(index);
+        
+    // }
+
     @Override
     public void remove(E x) throws ElementNotFoundException {
-        // TODO:
+        int position = this.array.indexOf(x);
+        if (this.array.isEmpty() || position>this.currentSize-1 || !(this.array.contains(x)) ){
+            throw new ElementNotFoundException(x);
+        }
+        else {
+            
+            E lastItem = this.array.get(--this.currentSize);     
+            this.arraySet(position, lastItem);
+            this.percolateUp(position);
+            this.percolateDown(position);
+        }
     }
+    
 
     @Override
     public E findMin() throws EmptyPriorityQueueException {
