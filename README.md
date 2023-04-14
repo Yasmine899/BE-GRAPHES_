@@ -1,7 +1,7 @@
 # Graph & Algorithm project &mdash; INSA Toulouse
 
 Lien VS live share : 
-https://prod.liveshare.vsengsaas.visualstudio.com/join?294AE38D5BF5A12CF53532790AEBA54D361F
+[https://prod.liveshare.vsengsaas.visualstudio.com/join?294AE38D5BF5A12CF53532790AEBA54D361F](https://prod.liveshare.vsengsaas.visualstudio.com/join?7E4D21474ADEA42CA9C0F540C5665C7CB5B1)
 ## How to start?
 
 You will not be able to use this repository to save your work, you need to copy / import / fork it to 
