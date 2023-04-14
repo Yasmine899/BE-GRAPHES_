@@ -2,6 +2,8 @@ package org.insa.graphs.algorithm.utils;
 
 import java.util.ArrayList;
 
+import org.insa.graphs.algorithm.shortestpath.Label;
+
 /**
  * Implements a binary heap containing elements of type E.
  *
@@ -229,5 +231,10 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
     public String toString() {
         return BinaryHeapFormatter.toStringTree(this, 8);
     }
+
+    public boolean exist(E value){
+        return this.array.contains(value);
+    }
+    
 
 }
