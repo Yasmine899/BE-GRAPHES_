@@ -33,6 +33,7 @@ public class ShortestPathSolution extends AbstractSolution {
         super(data, status);
         this.path = path;
     }
+    
 
     @Override
     public ShortestPathData getInputData() {

@@ -23,6 +23,7 @@ public class Label implements Comparable<Label> {
         this.label_pere=null;
     }
 
+
     public Node getSommet_courant() {
         return sommet_courant;
     }
@@ -39,7 +40,7 @@ public class Label implements Comparable<Label> {
         }
 
     public double getCout_realise() {
-        return cout_realise;
+        return this.cout_realise;
     }
 
     public void setCout_realise(double cout_realise) {

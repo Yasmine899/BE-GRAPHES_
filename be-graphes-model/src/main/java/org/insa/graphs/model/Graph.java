@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * <p>
- * Main graph class.
+ * Main graph class 
  * </p>
  * 
  * <p> test
