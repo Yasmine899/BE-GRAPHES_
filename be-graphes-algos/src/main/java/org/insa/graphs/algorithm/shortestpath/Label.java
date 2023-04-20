@@ -22,6 +22,13 @@ public class Label implements Comparable<Label> {
         this.pere=null;
         this.label_pere=null;
     }
+    public Label(Node sommet,boolean marque, Arc pere){
+        this.sommet_courant=sommet;
+        this.cout_realise=Double.POSITIVE_INFINITY;
+        this.marque=false;
+        this.pere=pere;
+    }
+
 
 
     public Node getSommet_courant() {

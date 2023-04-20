@@ -45,7 +45,7 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
                 for (Arc arc: node.getSuccessors()) {
 
                     // Small test to check allowed roads...
-                    if (!data.isAllowed(arc)) {
+                     if (!data.isAllowed(arc)) {
                         continue;
                     }
 

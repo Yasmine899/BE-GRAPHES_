@@ -9,6 +9,7 @@ import org.insa.graphs.algorithm.utils.BinaryHeap;
 import org.insa.graphs.model.Arc;
 import org.insa.graphs.model.Graph;
 import org.insa.graphs.model.Path;
+import org.insa.graphs.model.Node;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
@@ -91,6 +92,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         return new ShortestPathSolution( data,  Status.FEASIBLE , new Path(graph, arc_array) ) ;
     }*/
     //les variables
+
     
     boolean fini=false;
 
@@ -102,15 +104,23 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
     final int nbNodes = graph.size();
 
+    Label [] Labels =new Label[nbNodes]; 
+
+    ///initialisation du tableau de labels ,elle m'a saoulée avant de trouver prq l' algo marchait pas
+    int i = 0;
+    for (Node l : graph.getNodes()){
+        Labels[i] = new Label(l, false, null);
+        i++;
+    }
+
     BinaryHeap<Label> labels_heap = new BinaryHeap<Label>();
 
-    //tableau des labels
-    Label [] Labels =new Label[nbNodes]; 
     //Initialisation du tableau de labels en mettant au sommet d'orgine le cout 0
     Labels[data.getOrigin().getId()].setCout_realise(0);
 
     //ok insertion faite dans le tas
     labels_heap.insert(Labels[data.getOrigin().getId()]);
+
     // l algo se temine une fois arrivé à la destination ou tas vide 
     while (!labels_heap.isEmpty() && !fini ){
 
@@ -126,7 +136,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         for (Arc les_succeseurs : label_noeud_actuel.getSommet_courant().getSuccessors() ){
             //on remplit le tab labels
             Label label_les_succeseurs=Labels[les_succeseurs.getDestination().getId()];
-            if (!label_les_succeseurs.getmarque()){
+            if (!label_les_succeseurs.getmarque() && data.isAllowed(les_succeseurs)){
                 //si le cout du succes est sup au cout du predecess+cout de l arc
                 if (label_les_succeseurs.getCout_realise()>label_noeud_actuel.getCout_realise()+les_succeseurs.getLength()){
                    if (Labels[label_les_succeseurs.getSommet_courant().getId()].getCout_realise()!=Double.POSITIVE_INFINITY){
