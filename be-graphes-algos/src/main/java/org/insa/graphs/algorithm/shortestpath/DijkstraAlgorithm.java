@@ -92,6 +92,42 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         return new ShortestPathSolution( data,  Status.FEASIBLE , new Path(graph, arc_array) ) ;
     }*/
     //les variables
+    /*ALGORITHIIMIQUEMENT VOILA LE PROGRAMME
+     // Initialisation
+
+for 𝑥 ∈ 𝑋 loop
+    Label(x).Cost = +∞ ; 
+    Label(x).Father =NULL; 
+    Label(x).Mark =FALSE
+end loop
+
+Label(point d'origine).Cost = 0 ;
+Insert(Tas, Label(𝑜))
+
+// Itérations
+while not IsEmpty(Tas) et on est pas arrivé à la destination=> donc on definit un booleen loop
+    x=DeleteMin(Tas)
+    for 𝑦 ∈ Successeurs(𝑥) loop
+        if not Label.Mark(𝑦) then
+            if Label(𝑦).Cost >Label.Cost(𝑥) + CostArc(𝑥, 𝑦) then
+// mise à jour
+                if Label(𝑦).Cost = +∞ then
+                    remove=true;
+                else
+                    remove=false
+                end if
+                Label(𝑦).Cost = Label.Cost(𝑥) + CostArc(𝑥, 𝑦)
+                Label(𝑦).Father =x
+                if Remove then
+                    Remove(Tas, Label(𝑦))
+                end if
+                Insert(Tas, Label(𝑦))
+            end if
+        end if
+    end loop
+Label(𝑥).Mark =true
+end loop
+     */
 
     
     boolean fini=false;
@@ -113,6 +149,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         i++;
     }
 
+
     BinaryHeap<Label> labels_heap = new BinaryHeap<Label>();
 
     //Initialisation du tableau de labels en mettant au sommet d'orgine le cout 0
@@ -127,6 +164,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         //on retire le min du tas et on le marue;
         Label label_noeud_actuel =labels_heap.deleteMin();
         label_noeud_actuel.setMarque(true);
+        //on notifie quand le sommet est marqué
+        notifyNodeReached(label_noeud_actuel.getSommet_courant());
 
         //initialisation de la condition d'arret de la boucle
         if (label_noeud_actuel.getSommet_courant() == data.getDestination()){
@@ -144,8 +183,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                     }
                     //on met à jour le cout
                     label_les_succeseurs.setCout_realise(label_noeud_actuel.getCout_realise()+les_succeseurs.getLength());
-                    labels_heap.insert(label_les_succeseurs);
                     label_les_succeseurs.setPere(les_succeseurs);
+                    labels_heap.insert(label_les_succeseurs);
                 }
             }
 
