@@ -20,6 +20,7 @@ import org.insa.graphs.model.io.GraphReader;
 import org.insa.graphs.model.io.PathReader;
 
 public class Launch {
+    //les vérifications des tests automatiques later 
 
     /**
      * Create a new Drawing inside a JFrame an return it.

@@ -2,6 +2,8 @@ package org.insa.graphs.algorithm.shortestpath;
 
 import java.lang.reflect.Constructor;
 
+import javax.lang.model.util.ElementScanner6;
+
 import org.insa.graphs.model.Arc;
 import org.insa.graphs.model.Node;
 
@@ -40,11 +42,21 @@ public class Label implements Comparable<Label> {
     public void setLabel_pere(Label label_pere) {
         this.label_pere = label_pere;
     }
-    
-    public int compareTo(Label label){
+    //ancienne version de compare to pour djikstra,on la modifie pour A star
+    /*public int compareTo(Label label){
         return (this.cout_realise>label.cout_realise)?1:
         (this.cout_realise==label.cout_realise)?0:-1 ;
+        }*/
+    //implémenté dans A star
+    public double getTotalCost() {
+            return this.cout_realise;
+    }
+        
+    public int compareTo(Label label){
+        return (this.getTotalCost()>label.getTotalCost())?1:
+        (this.getTotalCost()==label.getTotalCost())?0:-1 ;
         }
+    
 
     public double getCout_realise() {
         return this.cout_realise;
@@ -72,6 +84,8 @@ public class Label implements Comparable<Label> {
     public void setMarque(boolean marque) {
         this.marque = marque;
     }
+    //on définit la méthode getTotalCost
+
 
 
 }
