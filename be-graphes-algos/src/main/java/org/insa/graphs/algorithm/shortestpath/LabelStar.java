@@ -5,18 +5,38 @@ import org.insa.graphs.model.Arc;
 import org.insa.graphs.model.Node;
 
 
-public class LabelStar extends Label {
+public class LabelStar extends Label  {
 
     private double cout;
     //constructeur
 
-    public LabelStar(Node sommet_courant,boolean marque,Arc sommet_pere){
-        super(sommet_courant, marque,sommet_pere);
-        this.cout=cout;
+
+    private LabelStar label_pere;
+
+
+
+
+    public LabelStar(Node sommet_courant,double cout_realise, Node destination){
+        super(sommet_courant, cout_realise);
+        this.cout=sommet_courant.getPoint().distanceTo(destination.getPoint());
+}
+
+    public LabelStar(Node sommet_courant,boolean marque, Arc pere, Node destination){
+        super(sommet_courant,marque,pere);
+        this.cout=sommet_courant.getPoint().distanceTo(destination.getPoint());
+}
+    public LabelStar getLabel_pere() {
+        return label_pere;
+    }
+//l'équivalentethisa() realise dans Djikstra
+
+
+    public double getTotalCost() {
+        return this.getCout_realise()+this.cout;
+}
+
+     
 
 }
-//l'équivalente de la methode get cout realise dans Djikstra
-    public double getTotalCost(){
-        return this.cout+this.getCout_realise();
-    }   
-}
+
+

@@ -12,7 +12,7 @@ public class Label implements Comparable<Label> {
     private boolean marque;
     private Label label_pere;
     private Node sommet_pere; 
-    private double cout_realise; 
+    protected double cout_realise; 
     private Arc pere;
 
     
@@ -49,7 +49,7 @@ public class Label implements Comparable<Label> {
         }*/
     //implémenté dans A star
     public double getTotalCost() {
-            return this.cout_realise;
+            return this.getCout_realise();
     }
         
     public int compareTo(Label label){
@@ -57,7 +57,7 @@ public class Label implements Comparable<Label> {
         (this.getTotalCost()==label.getTotalCost())?0:-1 ;
         }
     
-
+        //on définit la méthode getTotalCost pour le djikstra
     public double getCout_realise() {
         return this.cout_realise;
     }
@@ -84,7 +84,7 @@ public class Label implements Comparable<Label> {
     public void setMarque(boolean marque) {
         this.marque = marque;
     }
-    //on définit la méthode getTotalCost
+    
 
 
 
