@@ -20,31 +20,13 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
     }
 
     public void initialisation(){
-
-        ShortestPathData data = getInputData();
-        
-        Graph graph = data.getGraph();
-        final int nbNodes = graph.size();
-        
-        this.Labels =new LabelStar[nbNodes]; 
-
         int i = 0;
-        for (Node l : graph.getNodes()){
-            this.Labels[i] = new LabelStar( l, false, null ,data.getDestination());
+        for (Node noeud : graph.getNodes()){
+            this.Labels[i] = new LabelStar( noeud, false, null ,data.getDestination());
             i++;
         }
-
-        this.labels_heap = new BinaryHeap<>();
-
-        //Initialisation du tableau de labels en mettant au sommet d'orgine le cout 0
-        this.Labels[data.getOrigin().getId()].setCout_realise(0);
-
-        //ok insertion faite dans le tas
-        this.labels_heap.insert(this.Labels[data.getOrigin().getId()]);
-        System.out.println(labels_heap);
     
     }
-
     
 
 }

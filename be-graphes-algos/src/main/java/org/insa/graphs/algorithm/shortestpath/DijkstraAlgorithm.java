@@ -14,94 +14,83 @@ import org.insa.graphs.model.Node;
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
 
-
-    BinaryHeap<Label> labels_heap ;
-    Label [] Labels ;
-
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);
     }
+    final ShortestPathData data = getInputData();
+
+    Graph graph = data.getGraph();
+
+    Label [] Labels =new Label[graph.size()]; 
+
+
+
     //initialisation du tableau des labels 
     public void initialisation(){
-
-        ShortestPathData data = getInputData();
-
-
-        Graph graph = data.getGraph();
-
-        final int nbNodes = graph.size();
-    
-        this.Labels =new Label[nbNodes]; 
-
         int i = 0;
-        for (Node l : graph.getNodes()){
-            this.Labels[i] = new Label(l, false, null);
+        for (Node noeud : graph.getNodes()){
+            Labels[i] = new Label(noeud, false, null);
             i++;
         }
 
-
-        this.labels_heap = new BinaryHeap<Label>();
-
-        //Initialisation du tableau de labels en mettant au sommet d'orgine le cout 0
-        this.Labels[data.getOrigin().getId()].setCout_realise(0);
-
-        //ok insertion faite dans le tas
-        this.labels_heap.insert(this.Labels[data.getOrigin().getId()]);
     
+    }
+
+    public ShortestPathData getInputData() {
+        return super.getInputData();
     }
 
     @Override
     public ShortestPathSolution doRun() { 
 
     //appel de la fonction initialisation
-        initialisation();
-    //les variables    
+    initialisation();
+    //les variables   
+    BinaryHeap<Label>labels_heap = new BinaryHeap<Label>();
+
+    //Initialisation du tableau de labels en mettant au sommet d'orgine le cout 0
+    Labels[data.getOrigin().getId()].setCout_realise(0);
+
+    //ok insertion faite dans le tas
+    labels_heap.insert(this.Labels[data.getOrigin().getId()]); 
+
     boolean fini=false;
 
-    final ShortestPathData data = getInputData();
-
-    Graph graph = data.getGraph();
-
-    ShortestPathSolution solutionfinal = null; 
-
-    final int nbNodes = graph.size();
 
     // l algo se temine une fois arrivé à la destination ou tas vide 
-    while (!this.labels_heap.isEmpty() && !fini ){
+    while (!labels_heap.isEmpty() && !fini ){
 
         //on retire le min du tas et on le marue;
-        Label label_noeud_actuel =this.labels_heap.deleteMin();
+        Label label_noeud_actuel =labels_heap.deleteMin();
         label_noeud_actuel.setMarque(true);
         //on notifie quand le sommet est marqué
         notifyNodeReached(label_noeud_actuel.getSommet_courant());
 
         //initialisation de la condition d'arret de la boucle
-        if (label_noeud_actuel.getSommet_courant() == data.getDestination()){
-           fini=true;
-        }
+        fini = (data.getDestination() == label_noeud_actuel.getSommet_courant()); 
 
         for (Arc les_succeseurs : label_noeud_actuel.getSommet_courant().getSuccessors() ){
             //on remplit le tab labels
             Label label_les_succeseurs=this.Labels[les_succeseurs.getDestination().getId()];
             if (!label_les_succeseurs.getmarque() && data.isAllowed(les_succeseurs)){
                 //si le cout du succes est sup au cout du predecess+cout de l arc
-                if (label_les_succeseurs.getTotalCost()>label_noeud_actuel.getTotalCost()+les_succeseurs.getLength()){
-                   if (this.Labels[label_les_succeseurs.getSommet_courant().getId()].getTotalCost()!=Double.POSITIVE_INFINITY){
-                        this.labels_heap.remove(label_les_succeseurs);
+                if (label_les_succeseurs.getCout_realise()>label_noeud_actuel.getCout_realise()+data.getCost(les_succeseurs)){
+                   if (this.Labels[label_les_succeseurs.getSommet_courant().getId()].getCout_realise()!=Double.POSITIVE_INFINITY){
+                        labels_heap.remove(label_les_succeseurs);
                     }
                     //on met à jour le cout
                     label_les_succeseurs.setCout_realise(label_noeud_actuel.getCout_realise()+les_succeseurs.getLength());
                     label_les_succeseurs.setPere(les_succeseurs);
-                    this.labels_heap.insert(label_les_succeseurs);
+                    labels_heap.insert(label_les_succeseurs);
                 }
             }
 
         }
     }
     System.out.println("L'algo est fini ? :  " + fini);
+    ShortestPathSolution solutionfinal = null;
 
-
- if (this.Labels[ data.getDestination().getId() ]==null || !fini ){
+ if (Labels[ data.getDestination().getId() ]==null || !fini ){
     solutionfinal= new ShortestPathSolution (data, AbstractSolution.Status.INFEASIBLE);
 }
 else{

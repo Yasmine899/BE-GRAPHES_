@@ -1,6 +1,8 @@
 package org.insa.graphs.gui.simple;
 
 
+
+
 import java.sql.Date;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -59,9 +61,9 @@ public class Launch {
     private static long Astar_time=0;
     private static long Djikstra_time=0;
 
-    public static int test(Graph graph,String algorithme,int origine,int destination){
+    public static int test_temps(Graph graph,String algorithme,int origine,int destination){
 
-        int resultat_test=0;
+        int resultat_test_temps=0;
         //test distance
         long temps_deb=0;
         long temps_fin=0;
@@ -81,22 +83,52 @@ public class Launch {
             temps_fin = System.currentTimeMillis();
             Djikstra_time += (temps_fin-temps_deb);
         }
+       // if (pathAlgo==null) return 0;
 
         Path res_BellmanFord = TestPath(graph,  origine, destination, "BellmanFord");
 
-        if (comparer(pathAlgo, res_BellmanFord, true) == 1) {
-            resultat_test++;
+        if (comparer_temps(pathAlgo, res_BellmanFord) == 1) {
+            resultat_test_temps++;
         }
 
-        if (comparer(pathAlgo, res_BellmanFord,false) == 1) {
-            resultat_test++;
-        }
-
-        return resultat_test;
+        return resultat_test_temps;
     }
 
-    //fonction comparant les deux chemins
-    public static int comparer(Path chemin1, Path chemin2,boolean test_distance){
+    public static int test_distance(Graph graph,String algorithme,int origine,int destination){
+
+        int resultat_test_distance=0;
+        //test distance
+        long temps_deb=0;
+        long temps_fin=0;
+
+        Path pathAlgo = null;
+
+        if (algorithme.equals("Astar")){
+            //Astar
+            temps_deb = System.currentTimeMillis();
+            pathAlgo = TestPath(graph,  origine, destination,  "Astar");
+            temps_fin = System.currentTimeMillis();
+            Astar_time += (temps_fin-temps_deb);
+        } else {
+            //Djikstra
+            temps_deb = System.currentTimeMillis();
+            pathAlgo = TestPath(graph,  origine, destination, "Djikstra");
+            temps_fin = System.currentTimeMillis();
+            Djikstra_time += (temps_fin-temps_deb);
+        }
+        //if (pathAlgo==null) return 0;
+
+        Path res_BellmanFord = TestPath(graph,  origine, destination, "BellmanFord");
+
+        if (comparer_distance(pathAlgo, res_BellmanFord) == 1) {
+            resultat_test_distance++;
+        }
+
+        return resultat_test_distance;
+    }
+
+    //fonction comparant les deux chemins en temps
+    public static int comparer_temps(Path chemin1, Path chemin2){
         if (chemin1 == null){
             if (chemin2 == null){
                 return 1;
@@ -108,26 +140,36 @@ public class Launch {
                 return 0;
             }
         }
-
-
-        if(test_distance) {
-            if (Float.compare(chemin1.getLength(), chemin2.getLength()) == 0) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }else{
             if (Double.compare(chemin1.getMinimumTravelTime(), chemin2.getMinimumTravelTime()) == 0) {
                 return 1;
             } else {
                 return 0;
             }
         }
-    }
+    //fonction comparant les deux chemins en distance
+    public static int comparer_distance(Path chemin1, Path chemin2){
+        if (chemin1 == null){
+            if (chemin2 == null){
+                return 1;
+            } else {
+                return 0;
+            }
+            } else {
+                if (chemin2 == null){
+                    return 0;
+                }
+            }
+            if (Float.compare(chemin1.getLength(), chemin2.getLength()) == 0) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+    
 
-    //la fonction qui cree les chemins pour comparer
+    //la fonction qui cree les chemins pour comparer_temps et distance
 
-    public static Path TestPath(Graph graph,int idOrigine,int idDestination,String algorithme){
+    public static  Path TestPath(Graph graph,int idOrigine,int idDestination,String algorithme){
 
         Node origine = graph.get(idOrigine);
         Node destination = graph.get(idDestination);
@@ -140,11 +182,13 @@ public class Launch {
                 AStarAlgorithm AstarAlgo = new AStarAlgorithm(data);
                 res_algo=  AstarAlgo.doRun();
                 chemin = res_algo.getPath();
+                
         }
         else if (algorithme.equals("Djikstra")){
                 DijkstraAlgorithm DjikstraAlgo = new DijkstraAlgorithm(data);
                 res_algo=  DjikstraAlgo.doRun();
-                chemin = res_algo.getPath();        
+                chemin = res_algo.getPath();    
+                    
         }
         else if (algorithme.equals("BellmanFord")){  
                 BellmanFordAlgorithm BellmanFord = new BellmanFordAlgorithm(data);
@@ -154,8 +198,18 @@ public class Launch {
         }
         else{
             System.out.println("algorithme non valide");
+            return chemin;
          
-        }        
+        }  
+
+        //verification que le coût du chemin calculé par Dijkstra est bien le même que celui calculé par la classe Path
+       
+        
+      /* */  //test de validité du chemin trouvé      
+        /*if (chemin==null || chemin.isValid()==false){
+            System.out.println("Chemin non valide");
+            return null;
+        }*/
         return chemin;
 
     }
@@ -163,13 +217,30 @@ public class Launch {
 
     public static void main(String[] args) throws Exception {
 
-        // Visit these directory to see the list of available files on Commetud.
-        final String mapName = "/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/insa.mapgr";
-        final String pathName = "/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Paths/path_fr31insa_rangueil_r2.path";
 
+        int resultatDjikstra_correct_en_temps=0;
+
+        int resultatAStar_correct_en_temps=0;
+
+        int resultatDjikstra_correct_en_distance=0;
+
+        int resultatAStar_correct_en_distance=0;
+
+        int origine,destination;
+        
+        // Visit these directory to see the list of available files on Commetud.
+        
+        
+        final String[] mapNames = {"/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/insa.mapgr", "/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/fractal.mapgr"};
+        int nb_test=2;
+        int nb_cartes = 2;
+
+        for (int j =0; j<nb_cartes; j++){
+
+        
         // Create a graph reader.
         final GraphReader reader = new BinaryGraphReader(
-                new DataInputStream(new BufferedInputStream(new FileInputStream(mapName))));
+                new DataInputStream(new BufferedInputStream(new FileInputStream(mapNames[j]))));
 
         // TODO: Read the graph.
         final Graph graph = reader.read();
@@ -180,27 +251,52 @@ public class Launch {
         // TODO: Draw the graph on the drawing.
         drawing.drawGraph(graph);
 
-        // TODO: Create a PathReader.
-        final PathReader pathReader = new BinaryPathReader(new DataInputStream(
-            new BufferedInputStream(new FileInputStream(pathName))
-        ));
 
-        // TODO: Read the path.
-        final Path path = pathReader.readPath(graph);
 
-        // TODO: Draw the path. (Path path, Color color, boolean markers)
-        drawing.drawPath(path, Color.CYAN, true );
-
-        int nb_test=200;
-        int resultatDjikstra=0;
-        int resultatAStar=0;
-        double origine,destination;
-        System.out.println("commencons les tests");
+        System.out.println("commencons les tests avec la carte "+mapNames[j]);
+        ///la boucle qui va renvoyer le nombre de resultats bons
         for (int i = 0; i < nb_test; i++){
             //avoir un nombre aléatoire entre 0 et la taille du graphe 
-            origine= Math.floor(Math.random()*graph.size());
-            destination = Math.floor(Math.random()*graph.size());
+            origine= (int)Math.floor(Math.random()*graph.size());
+            destination = (int) Math.floor(Math.random()*graph.size());
+
+            resultatDjikstra_correct_en_temps=resultatDjikstra_correct_en_temps+test_temps(graph,"Djikstra",origine,destination);
+            resultatAStar_correct_en_temps=resultatAStar_correct_en_temps+test_temps(graph,"Astar",origine,destination);
+        
+            resultatDjikstra_correct_en_distance=resultatDjikstra_correct_en_distance+test_distance(graph,"Djikstra",origine,destination);
+            resultatAStar_correct_en_distance=resultatAStar_correct_en_distance+test_distance(graph,"Astar",origine,destination);
     }
+    
+        }
+
+    System.out.println("le nombre de test en total c'est "+nb_test*nb_cartes);
+
+    //veracité Djikstra en temps et distance
+    int pourcentage_veracite_Djikstra_en_temps=(resultatDjikstra_correct_en_temps*100/(nb_test*nb_cartes));
+    int pourcentage_veracite_Djikstra_en_distance=(resultatDjikstra_correct_en_distance*100/(nb_test*nb_cartes));
+    System.out.println("le nombre de  resultats corrects de djikstra en temps est de "+resultatDjikstra_correct_en_temps);
+    System.out.println("le nombre de  resultats corrects de djikstra en distance est de "+resultatDjikstra_correct_en_distance);
+    System.out.println("le pourcentage de véracité de Djikstra en temps est de  "+pourcentage_veracite_Djikstra_en_temps);
+    System.out.println("le pourcentage de véracité de Djikstra en distance est de  "+pourcentage_veracite_Djikstra_en_distance);
+
+    //veracite AStar en temps et distance
+    int pourcentage_veracite_AStar_en_temps=(resultatAStar_correct_en_temps*100/(nb_test*nb_cartes));
+    int pourcentage_veracite_AStar_en_distance=(resultatAStar_correct_en_distance*100/(nb_test*nb_cartes));
+    System.out.println("le nombre de  resultats corrects de AStar en temps est de "+resultatAStar_correct_en_temps);
+    System.out.println("le nombre de  resultats corrects de AStar en distance est de "+resultatAStar_correct_en_distance);
+    System.out.println("le pourcentage de véracité de AStar en temps est de  "+pourcentage_veracite_AStar_en_temps);
+    System.out.println("le pourcentage de véracité de AStar en distance est de  "+pourcentage_veracite_AStar_en_distance);
+
+    //veracite total Djikstra et AStar
+    int nb_total_Djikstra=resultatDjikstra_correct_en_temps+resultatDjikstra_correct_en_distance;
+    int nb_total_AStar=resultatAStar_correct_en_temps+resultatAStar_correct_en_distance;
+
+    int pourcentage_veracite_Djikstra=(nb_total_Djikstra*100/(2*(nb_test*nb_cartes)));
+    int pourcentage_veracite_Astar=(nb_total_AStar*100/(2*(nb_test*nb_cartes)));
+    System.out.println("le pourcentage de veracité de djikstra en temps est distance "+pourcentage_veracite_Djikstra);
+    System.out.println("le pourcentage de véracité de AStar en temps et distance est de  "+pourcentage_veracite_Astar);
 
 }
 }
+
+
