@@ -84,8 +84,6 @@ public class Launch {
 
         Path res_BellmanFord = TestPath(graph,  origine, destination, "BellmanFord");
 
-
-        // tests if the results are the same in terms of time and length
         if (comparer(pathAlgo, res_BellmanFord, true) == 1) {
             resultat_test++;
         }
@@ -138,7 +136,7 @@ public class Launch {
         ShortestPathSolution res_algo;
         ShortestPathData data= new ShortestPathData(graph,origine,destination,arcs);
 
-        if (algorithme.equals("Astar")){ // we chose the algorithme we want
+        if (algorithme.equals("Astar")){ 
                 AStarAlgorithm AstarAlgo = new AStarAlgorithm(data);
                 res_algo=  AstarAlgo.doRun();
                 chemin = res_algo.getPath();
