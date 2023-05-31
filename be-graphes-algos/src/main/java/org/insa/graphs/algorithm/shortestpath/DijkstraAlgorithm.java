@@ -51,7 +51,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     }
 
     @Override
-    protected ShortestPathSolution doRun() { 
+    public ShortestPathSolution doRun() { 
 
     //appel de la fonction initialisation
         initialisation();
