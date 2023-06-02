@@ -13,7 +13,7 @@ import org.insa.graphs.model.Node;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     //comparer les performances de l'algo 
-    protected static int nb_sommets_visites=0;
+    protected int nb_sommets_visites=0;
 
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);
@@ -63,6 +63,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
         //on retire le min du tas et on le marue;
         Label label_noeud_actuel =labels_heap.deleteMin();
+        this.nb_sommets_visites++;
         label_noeud_actuel.setMarque(true);
         //on notifie quand le sommet est marqué
         notifyNodeReached(label_noeud_actuel.getSommet_courant());
@@ -88,11 +89,11 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
         }
     }
-    System.out.println("L'algo est fini ? :  " + fini);
+    // System.out.println("L'algo est fini ? :  " + fini);
     ShortestPathSolution solutionfinal = null;
 
  if (Labels[ data.getDestination().getId() ]==null || !fini ){
-    solutionfinal= new ShortestPathSolution (data, AbstractSolution.Status.INFEASIBLE);
+    solutionfinal= new ShortestPathSolution (data, AbstractSolution.Status.INFEASIBLE, this.nb_sommets_visites);
 }
 else{
 
@@ -110,13 +111,12 @@ else{
 
     Collections.reverse(liste_arcs);
     
-    solutionfinal = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, liste_arcs));
+    solutionfinal = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, liste_arcs), this.nb_sommets_visites);
 
 }
 return solutionfinal;
 
 }
-
 
 }
 /*ALGORITHIIMIQUEMENT VOILA LE PROGRAMME
