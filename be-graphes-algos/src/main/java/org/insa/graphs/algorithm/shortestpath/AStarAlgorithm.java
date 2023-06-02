@@ -18,7 +18,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
     public AStarAlgorithm(ShortestPathData data){
         super(data);
     }
-
+//astar herite de djikstra ce qui change c est le tableau de label et le calcul du cout(cf vol d'oiseau)
     public void initialisation(){
         int i = 0;
         for (Node noeud : graph.getNodes()){

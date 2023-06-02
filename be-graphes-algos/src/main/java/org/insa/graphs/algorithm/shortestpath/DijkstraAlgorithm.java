@@ -12,7 +12,8 @@ import org.insa.graphs.model.Path;
 import org.insa.graphs.model.Node;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
-
+    //comparer les performances de l'algo 
+    protected static int nb_sommets_visites=0;
 
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);
@@ -115,6 +116,8 @@ else{
 return solutionfinal;
 
 }
+
+
 }
 /*ALGORITHIIMIQUEMENT VOILA LE PROGRAMME
      // Initialisation

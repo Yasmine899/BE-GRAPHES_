@@ -31,6 +31,9 @@ import org.insa.graphs.model.io.BinaryPathReader;
 import org.insa.graphs.model.io.GraphReader;
 import org.insa.graphs.model.io.PathReader;
 
+
+
+
 public class Launch {
     //les vérifications des tests automatiques later 
 
@@ -41,6 +44,10 @@ public class Launch {
      * 
      * @throws Exception if something wrong happens when creating the graph.
      */
+    //comparer les performances de Djikstra et Astar en temps et en distance 
+    private static long duréeAStar=0;
+    private static long duréeDjikstra=0;
+
     public static Drawing createDrawing() throws Exception {
         BasicDrawing basicDrawing = new BasicDrawing();
         SwingUtilities.invokeAndWait(new Runnable() {
@@ -58,15 +65,12 @@ public class Launch {
         return basicDrawing;
     }
 
-    private static long Astar_time=0;
-    private static long Djikstra_time=0;
-
     public static int test_temps(Graph graph,String algorithme,int origine,int destination){
 
         int resultat_test_temps=0;
         //test distance
-        long temps_deb=0;
-        long temps_fin=0;
+        long temps_deb;
+        long temps_fin;
 
         Path pathAlgo = null;
 
@@ -75,13 +79,13 @@ public class Launch {
             temps_deb = System.currentTimeMillis();
             pathAlgo = TestPath(graph,  origine, destination,  "Astar");
             temps_fin = System.currentTimeMillis();
-            Astar_time += (temps_fin-temps_deb);
+            duréeAStar += (temps_fin-temps_deb);
         } else {
             //Djikstra
             temps_deb = System.currentTimeMillis();
             pathAlgo = TestPath(graph,  origine, destination, "Djikstra");
             temps_fin = System.currentTimeMillis();
-            Djikstra_time += (temps_fin-temps_deb);
+            duréeDjikstra += (temps_fin-temps_deb);
         }
        // if (pathAlgo==null) return 0;
 
@@ -108,13 +112,13 @@ public class Launch {
             temps_deb = System.currentTimeMillis();
             pathAlgo = TestPath(graph,  origine, destination,  "Astar");
             temps_fin = System.currentTimeMillis();
-            Astar_time += (temps_fin-temps_deb);
+            duréeAStar += (temps_fin-temps_deb);
         } else {
             //Djikstra
             temps_deb = System.currentTimeMillis();
             pathAlgo = TestPath(graph,  origine, destination, "Djikstra");
             temps_fin = System.currentTimeMillis();
-            Djikstra_time += (temps_fin-temps_deb);
+            duréeDjikstra += (temps_fin-temps_deb);
         }
         //if (pathAlgo==null) return 0;
 
@@ -173,10 +177,11 @@ public class Launch {
 
         Node origine = graph.get(idOrigine);
         Node destination = graph.get(idDestination);
-        Path chemin = null;
-        ArcInspector arcs= ArcInspectorFactory.getAllFilters().get(0);
         ShortestPathSolution res_algo;
-        ShortestPathData data= new ShortestPathData(graph,origine,destination,arcs);
+        ShortestPathData data= new ShortestPathData(graph,origine,destination,ArcInspectorFactory.getAllFilters().get(0));
+        Path chemin = null;
+
+
 
         if (algorithme.equals("Astar")){ 
                 AStarAlgorithm AstarAlgo = new AStarAlgorithm(data);
@@ -205,7 +210,7 @@ public class Launch {
         //verification que le coût du chemin calculé par Dijkstra est bien le même que celui calculé par la classe Path
        
         
-      /* */  //test de validité du chemin trouvé      
+        //test de validité du chemin trouvé      
         /*if (chemin==null || chemin.isValid()==false){
             System.out.println("Chemin non valide");
             return null;
@@ -217,6 +222,7 @@ public class Launch {
 
     public static void main(String[] args) throws Exception {
 
+//Test de prise de points randoms avec un nb de test =200 avec des cartes routieres et non routieres
 
         int resultatDjikstra_correct_en_temps=0;
 
@@ -226,13 +232,21 @@ public class Launch {
 
         int resultatAStar_correct_en_distance=0;
 
+        int resultatDjikstra_correct_en_temps_nul=0;
+
+        int resultatAStar_correct_en_temps_nul=0;
+
+        int resultatDjikstra_correct_en_distance_nul=0;
+
+        int resultatAStar_correct_en_distance_nul=0;
+
         int origine,destination;
         
         // Visit these directory to see the list of available files on Commetud.
         
-        
-        final String[] mapNames = {"/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/insa.mapgr", "/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/fractal.mapgr"};
-        int nb_test=2;
+        //test avec les cartes routieres=>insa et non routieres =>carre et cartes non connexes =>guadeloupe
+        final String[] mapNames = {"/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/insa.mapgr", "/mnt/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/insa.mapgr"};
+        int nb_test=200;
         int nb_cartes = 2;
 
         for (int j =0; j<nb_cartes; j++){
@@ -296,7 +310,85 @@ public class Launch {
     System.out.println("le pourcentage de veracité de djikstra en temps est distance "+pourcentage_veracite_Djikstra);
     System.out.println("le pourcentage de véracité de AStar en temps et distance est de  "+pourcentage_veracite_Astar);
 
+    //comparaison des performances de AStar et Djikstra en durée d'execution
+    System.out.println("la durée de AStar "+duréeAStar);
+    System.out.println("la durée de Djikstra "+duréeDjikstra);
+    System.out.println("le pourcentage de différence de durée entre AStar et Djikstra est de "+(duréeAStar-duréeDjikstra)*100/duréeDjikstra+"%");
+    System.out.println("le pourcentage de différence de durée entre Djikstra et AStar est de "+(duréeDjikstra-duréeAStar)*100/duréeAStar+"%");
+/* 
+    //Test des chemin nuls et voir le temps d'execution des deux algos
+
+    long diff_djikstra=duréeDjikstra;
+    long diff_astar=duréeAStar;
+
+    for (int j =0; j<nb_cartes; j++){
+
+        
+        // Create a graph reader.
+        final GraphReader reader = new BinaryGraphReader(
+                new DataInputStream(new BufferedInputStream(new FileInputStream(mapNames[j]))));
+
+        // TODO: Read the graph.
+        final Graph graph = reader.read();
+
+        // Create the drawing:
+        final Drawing drawing = createDrawing();
+
+        // TODO: Draw the graph on the drawing.
+        drawing.drawGraph(graph);
+
+        ///Test de validité des algorithmes Djikstra et AStar
+//Decommentaire pour test des chemin nuls => tous les chemins ont bien un cout de 0
+
+        System.out.println("commencons les tests avec la carte avec des points identiques"+mapNames[j]);
+        ///la boucle qui va renvoyer le nombre de resultats bons
+        for (int i = 0; i < nb_test; i++){
+            //avoir un nombre aléatoire entre 0 et la taille du graphe 
+            origine= i;
+            destination = i;
+
+            resultatDjikstra_correct_en_temps_nul=resultatDjikstra_correct_en_temps_nul+test_temps(graph,"Djikstra",origine,destination);
+            resultatAStar_correct_en_temps_nul=resultatAStar_correct_en_temps_nul+test_temps(graph,"Astar",origine,destination);
+        
+            resultatDjikstra_correct_en_distance_nul=resultatDjikstra_correct_en_distance_nul+test_distance(graph,"Djikstra",origine,destination);
+            resultatAStar_correct_en_distance_nul=resultatAStar_correct_en_distance_nul+test_distance(graph,"Astar",origine,destination);
+    }
+    
+        }
+        //veracité Djikstra en temps et distance
+    int pourcentage_veracite_Djikstra_en_temps_nul=(resultatDjikstra_correct_en_temps_nul*100/(nb_test*nb_cartes));
+    int pourcentage_veracite_Djikstra_en_distance_nul=(resultatDjikstra_correct_en_distance_nul*100/(nb_test*nb_cartes));
+    System.out.println("le nombre de  resultats corrects de djikstra en temps est de "+resultatDjikstra_correct_en_temps_nul);
+    System.out.println("le nombre de  resultats corrects de djikstra en distance est de "+resultatDjikstra_correct_en_distance_nul);
+    System.out.println("le pourcentage de véracité de Djikstra en temps est de  "+pourcentage_veracite_Djikstra_en_temps_nul);
+    System.out.println("le pourcentage de véracité de Djikstra en distance est de  "+pourcentage_veracite_Djikstra_en_distance_nul);
+
+    //veracite AStar en temps et distance
+    int pourcentage_veracite_AStar_en_temps_nul=(resultatAStar_correct_en_temps_nul*100/(nb_test*nb_cartes));
+    int pourcentage_veracite_AStar_en_distance_nul=(resultatAStar_correct_en_distance_nul*100/(nb_test*nb_cartes));
+    System.out.println("le nombre de  resultats corrects de AStar en temps est de "+resultatAStar_correct_en_temps_nul);
+    System.out.println("le nombre de  resultats corrects de AStar en distance est de "+resultatAStar_correct_en_distance_nul);
+    System.out.println("le pourcentage de véracité de AStar en temps est de  "+pourcentage_veracite_AStar_en_temps_nul);
+    System.out.println("le pourcentage de véracité de AStar en distance est de  "+pourcentage_veracite_AStar_en_distance_nul);
+
+    //veracite total Djikstra et AStar
+    int nb_total_Djikstra_nul=resultatDjikstra_correct_en_temps_nul+resultatDjikstra_correct_en_distance_nul;
+    int nb_total_AStar_nul=resultatAStar_correct_en_temps_nul+resultatAStar_correct_en_distance_nul;
+
+    int pourcentage_veracite_Djikstra_nul=(nb_total_Djikstra_nul*100/(2*(nb_test*nb_cartes)));
+    int pourcentage_veracite_Astar_nul=(nb_total_AStar_nul*100/(2*(nb_test*nb_cartes)));
+    System.out.println("le pourcentage de veracité de djikstra en temps est distance "+pourcentage_veracite_Djikstra_nul);
+    System.out.println("le pourcentage de véracité de AStar en temps et distance est de  "+pourcentage_veracite_Astar_nul);
+
+    //comparaison des performances de AStar et Djikstra en durée d'execution
+    System.out.println("la durée de AStar "+duréeAStar);
+    System.out.println("la durée de Djikstra "+duréeDjikstra);
+    System.out.println("le pourcentage de différence de durée entre AStar et Djikstra est de "+(duréeAStar-duréeDjikstra)*100/duréeDjikstra+"%");
+    System.out.println("le pourcentage de différence de durée entre Djikstra et AStar est de "+(duréeDjikstra-duréeAStar)*100/duréeAStar+"%");
+
+*/
 }
+
 }
 
 
